@@ -2,23 +2,17 @@
 
 A component is a reusable part of your application's user interface.
 
-For example, our Employee Management System will have:
+For example, Let's take an Employee Management System, will have:
 
 Employee Management System
 
 Dashboard
 
-# 120
+Total employees         Active          Inactive
 
-Total employees
+# 120                   # 105              # 15
 
-# 105
 
-Active
-
-# 15
-
-Inactive
 
 Employee List
 
