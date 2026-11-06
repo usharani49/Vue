@@ -470,6 +470,8 @@ These are important variations of what we learned.
 const highSalaryEmployees = employees.filter(
   employee => employee.salary > 35000
 );
+
+console.log(highSalaryEmployees)
 ```
 
 ## Question 2: Find an employee with ID 103.
@@ -478,6 +480,8 @@ const highSalaryEmployees = employees.filter(
 const employee = employees.find(
   employee => employee.id === 103
 );
+
+console.log(employee)
 ```
 
 Difference:
@@ -491,6 +495,8 @@ Difference:
 const employeeNames = employees.map(
   employee => employee.name
 );
+
+console.log(employeeNames)
 ```
 
 Output:
