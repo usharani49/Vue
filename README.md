@@ -226,7 +226,7 @@ It checks every array element and returns a new array containing only the elemen
 
 ## Your  tasks
 
-# Task 1: Employee information
+Task 1: Employee information
 
 Create an employee object with:
 
@@ -237,17 +237,17 @@ Create an employee object with:
 
 Display all four values in `App.vue`.
 
-# Task 2: Employee list
+Task 2: Employee list
 
 Create an array containing five employees.
 
 Display all five using `v-for`.
 
-# Task 3: Department filtering
+Task 3: Department filtering
 
 Display only employees belonging to the IT department using JavaScript `filter()`.
 
-# Task 4: Explain the concepts
+Task 4: Explain the concepts
 
 Tell me in your own words:
 
@@ -261,7 +261,7 @@ Tell me in your own words:
 
 ## Your tasks Answers
 
-# Task 1: Display employee information
+Task 1: Display employee information
 
 Replace your `App.vue` contents with:
 
@@ -317,7 +317,7 @@ Explanation:
 - `employee.name` accesses the name property.
 - `{{ employee.name }}` displays its value in the browser.
 
-# Task 2: Display five employees
+Task 2: Display five employees
 
 ```
 <template>
@@ -388,7 +388,7 @@ Explanation:
 
 `:key="employee.id"` gives every rendered employee a unique key. Vue uses it to track list items efficiently when the list changes.
 
-# Task 3: Filter IT department employees
+Task 3: Filter IT department employees
 
 ```
 <template>
@@ -449,7 +449,7 @@ How `filter()` works:
 
 The result is a new array containing Rahul and Arjun.
 
-# Task 4: Interview answers
+Task 4: Interview answers
 
 | Question                    | Answer                                                            |
 | --------------------------- | ----------------------------------------------------------------- |
