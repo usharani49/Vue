@@ -1,8 +1,8 @@
-## 1. What is a Vue component?
+##  What is a Vue component?
 
-A component is a reusable part of your application's user interface.
+A component is a reusable part of our application's user interface.
 
-For example, our Employee Management System will have:
+For example, Let's take an example of Employee Management System ,will have:
 
 Employee Management System
 
@@ -28,7 +28,6 @@ Employee List
 | 102 | Priya | HR         |
 | 103 | Arjun | Finance    |
 
-Illustrative dashboard layout.
 
 We can divide this screen into reusable components:
 
@@ -43,9 +42,8 @@ Suppose we need to change the employee table design. We can work on `EmployeeTab
 
 This is how professional Vue applications are organized.
 
-## 2. What does a Vue component look like?
-
-Open your `App.vue` file.
+##  What does a Vue component look like?
+Open our App.vue file.
 
 A Vue component usually contains three sections:
 
@@ -75,7 +73,7 @@ Let's understand them.
 
 `scoped` means the styles apply to this component rather than accidentally affecting other components.
 
-## 3. Example: Display employee information
+##  Example: Display employee information
 
 Replace the contents of `App.vue` temporarily with this:
 
@@ -118,7 +116,7 @@ This is called interpolation.
 
 You use interpolation whenever you want to display JavaScript data in your Vue template.
 
-## 4. Next concept: Display multiple employees
+##  Next concept: Display multiple employees
 
 Real applications have multiple employees. We don't create separate HTML elements manually for every employee.
 
@@ -169,7 +167,7 @@ Important concepts:
 
 This pattern appears frequently in company projects.
 
-## 5. Interview programming practice
+##  Interview programming practice
 
 JavaScript coding interview
 
