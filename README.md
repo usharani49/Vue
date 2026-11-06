@@ -43,23 +43,27 @@ Suppose we need to change the employee table design. We can work on `EmployeeTab
 This is how professional Vue applications are organized.
 
 ##  What does a Vue component look like?
-Open our App.vue file.
+Create App.vue file.
 
 A Vue component usually contains three sections:
 
 ```
 <template>
-  <h1>Hello Vue!</h1>
+  <h1>Hello World</h1>
+  <h2>{{ msg }}</h2>
 </template>
 
 <script setup>
-const message = "Welcome to Vue";
+ const msg="Welcome to vue"
 </script>
 
 <style scoped>
-h1 {
+ h1 {
   color: blue;
-}
+ }
+ h2{
+  color: green;
+ }
 </style>
 ```
 
@@ -72,6 +76,9 @@ Let's understand them.
 | `<style scoped>` | CSS for this component     |
 
 `scoped` means the styles apply to this component rather than accidentally affecting other components.
+Here, {{ msg }} connects the JavaScript variable to the HTML output.
+
+This is called ## interpolation.
 
 ##  Example: Display employee information
 
