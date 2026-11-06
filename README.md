@@ -134,7 +134,7 @@ JavaScript handles:
   
 Vue displays the results on the screen.
 
-##  Next concept: Display multiple employees
+##  Display multiple employees
 
 Real applications have multiple employees. We don't create separate HTML elements manually for every employee.
 
