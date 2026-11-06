@@ -76,9 +76,8 @@ Let's understand them.
 | `<style scoped>` | CSS for this component     |
 
 `scoped` means the styles apply to this component rather than accidentally affecting other components.
-Here, {{ msg }} connects the JavaScript variable to the HTML output.
 
-This is called interpolation.
+Here, {{ msg }} connects the JavaScript variable to the HTML output. This is called interpolation.
 
 ##  Example: Display employee information
 
