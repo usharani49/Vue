@@ -78,7 +78,7 @@ Let's understand them.
 `scoped` means the styles apply to this component rather than accidentally affecting other components.
 Here, {{ msg }} connects the JavaScript variable to the HTML output.
 
-This is called ## interpolation.
+This is called interpolation.
 
 ##  Example: Display employee information
 
