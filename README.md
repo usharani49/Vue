@@ -187,8 +187,6 @@ This pattern appears frequently in company projects.
 
 ##  Interview programming practice
 
-JavaScript coding interview
-
 Imagine an interviewer gives you this employee data:
 
 ```
