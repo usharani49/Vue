@@ -4,15 +4,15 @@ A component is a reusable part of your application's user interface.
 
 For example, Let's take an Employee Management System, will have:
 
-Employee Management System
-
-Dashboard
-
-Total employees         Active          Inactive
-
-# 120                   # 105              # 15
-
-
+|## Employee Management System                      |
+|                                                   |
+| # Dashboard                                       |
+|                                                   |
+|   Total employees         Active          Inactive|
+|                                                   |
+|    #120                   #105              #15   |
+|
+|
 
 Employee List
 
