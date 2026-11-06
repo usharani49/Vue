@@ -120,7 +120,19 @@ What is happening?
 
 This is called interpolation.
 
-You use interpolation whenever you want to display JavaScript data in your Vue template.
+We use interpolation whenever we want to display JavaScript data in our Vue template.
+
+## Where does JavaScript logic get used in real projects?
+For example, suppose our Employee Management System has 100 employees.
+
+JavaScript handles:
+- Employee data.
+- Calculating total employees.
+- Filtering employees by department.
+- Searching employees.
+- Processing API responses.
+  
+Vue displays the results on the screen.
 
 ##  Next concept: Display multiple employees
 
