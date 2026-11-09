@@ -746,3 +746,299 @@ Task 4: Interview questions
 3. Why do we use `.value`?
 4. Why does Vue update the screen automatically?
 5. What does `!isActive.value` mean?
+
+# Try it & Assignments Answers
+
+# Try it: Employee counter
+
+This is the Vue 3 implementation using `ref()`.
+
+Replace your `App.vue` with:
+
+```
+<template>
+  <div>
+    <h1>Employee Counter</h1>
+
+    <h2>Employee Count: {{ count }}</h2>
+
+    <button @click="addEmployee">Add Employee</button>
+
+    <button @click="removeEmployee">Remove Employee</button>
+
+    <button @click="resetCount">Reset</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const count = ref(5);
+
+function addEmployee() {
+  count.value++;
+}
+
+function removeEmployee() {
+  if (count.value > 0) {
+    count.value--;
+  }
+}
+
+function resetCount() {
+  count.value = 5;
+}
+</script>
+```
+
+Explanation:
+
+- `ref(5)` initializes the counter to 5.
+- `count.value++` increases the count.
+- `count.value--` decreases the count.
+- `count.value = 5` resets it.
+- Vue automatically updates the displayed count.
+
+
+## Task 1. Counter application
+
+Requirements:
+
+- Start at 0.
+- Add, decrease and reset buttons.
+
+```
+<template>
+  <div>
+    <h1>Counter Application</h1>
+
+    <h2>Count: {{ count }}</h2>
+
+    <button @click="increaseCount">Increase</button>
+
+    <button @click="decreaseCount">Decrease</button>
+
+    <button @click="resetCount">Reset</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const count = ref(0);
+
+function increaseCount() {
+  count.value++;
+}
+
+function decreaseCount() {
+  count.value--;
+}
+
+function resetCount() {
+  count.value = 0;
+}
+</script>
+```
+
+Important:
+
+The `@click` directive listens for a button click.
+
+For example:
+
+```
+<button @click="increaseCount">Increase</button>
+```
+
+When the user clicks the button, Vue executes `increaseCount()`.
+
+## Task 2. Employee salary application
+
+Requirements:
+
+- Initial salary: ₹30,000.
+- Increase by ₹5,000.
+- Decrease by ₹2,000.
+
+```
+<template>
+  <div>
+    <h1>Employee Salary Management</h1>
+
+    <h2>Employee: Rahul</h2>
+
+    <h2>Salary: ₹{{ salary }}</h2>
+
+    <button @click="increaseSalary">
+      Increase Salary
+    </button>
+
+    <button @click="decreaseSalary">
+      Deduct Salary
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const salary = ref(30000);
+
+function increaseSalary() {
+  salary.value += 5000;
+}
+
+function decreaseSalary() {
+  if (salary.value >= 2000) {
+    salary.value -= 2000;
+  }
+}
+</script>
+```
+
+Example:
+
+| Action   | Salary  |
+| -------- | ------- |
+| Initial  | ₹30,000 |
+| Increase | ₹35,000 |
+| Increase | ₹40,000 |
+| Deduct   | ₹38,000 |
+| Deduct   | ₹36,000 |
+
+Why did we use this condition?
+
+```
+if (salary.value >= 2000)
+```
+
+It prevents the salary from becoming negative.
+
+## Task 3. Employee status application
+
+Requirements:
+
+- Employee: Rahul.
+- Initial status: Active.
+- Toggle between Active and Inactive.
+
+```
+<template>
+  <div>
+    <h1>Employee Status Management</h1>
+
+    <h2>Employee: Rahul</h2>
+
+    <h3>
+      Status: {{ isActive ? "Active" : "Inactive" }}
+    </h3>
+
+    <button @click="toggleStatus">
+      Change Status
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const isActive = ref(true);
+
+function toggleStatus() {
+  isActive.value = !isActive.value;
+}
+</script>
+```
+
+Understand this carefully:
+
+```
+isActive.value = !isActive.value;
+```
+
+| Existing value | New value |
+| -------------- | --------- |
+| true           | false     |
+| false          | true      |
+
+The `!` operator reverses a Boolean value.
+
+## Task 4. Interview answers
+
+1\. What is reactivity?
+
+Reactivity means Vue tracks changes in data and automatically updates the relevant user interface.
+
+2\. Difference between normal variable and `ref()`?
+
+A normal JavaScript variable is not automatically tracked by Vue. A `ref()` creates reactive data that Vue tracks.
+
+3\. Why do we use `.value`?
+
+We use `.value` in JavaScript to read or update the value inside a ref.
+
+4\. Why does Vue update the screen automatically?
+
+Vue tracks reactive dependencies. When a tracked value changes, Vue schedules the necessary UI update.
+
+5\. What does `!isActive.value` mean?
+
+It reverses the Boolean value. True becomes false, and false becomes true.
+
+# Additional interview coding practice
+
+These questions help you understand the concepts beyond the basic examples.
+
+## Question 1: What is the output?
+
+```
+let count = 10;
+
+count++;
+count += 5;
+count--;
+
+console.log(count);
+```
+
+Answer: `15`
+
+Calculation: 10 → 11 → 16 → 15.
+
+## Question 2: What is the output?
+
+```
+let isActive = true;
+
+isActive = !isActive;
+isActive = !isActive;
+
+console.log(isActive);
+```
+
+Answer: `true`
+
+## Question 3: Find the mistake
+
+```
+<script setup>
+import { ref } from "vue";
+
+const count = ref(0);
+
+function increaseCount() {
+  count++;
+}
+</script>
+```
+
+Mistake: We used `count++` instead of `count.value++`.
+
+Correct code:
+
+```
+function increaseCount() {
+  count.value++;
+}
+```
