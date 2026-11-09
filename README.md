@@ -715,7 +715,7 @@ Follow-up: What will happen after executing the same statement again?
 
 Answer: It becomes `true`.
 
-# Day 3 assignments
+# Assignments
 
 Task 1: Counter application
 
