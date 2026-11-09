@@ -512,3 +512,237 @@ Difference:
 - `find()` returns the first matching element.
 
 These three methods are essential for frontend development and coding interviews.
+
+
+# Vue 3 Reactivity and `ref()`
+
+Goal: Understand how Vue updates the screen when data changes.
+
+## 1. First, understand the problem
+
+Suppose you have an employee application.
+
+Initially, the employee count is 5.
+
+When you add a new employee, the count should become 6 automatically.
+
+How does Vue know that the data changed?
+
+This is where reactivity comes in.
+
+## 2. Normal JavaScript variable vs Vue `ref()`
+
+First, consider normal JavaScript:
+
+```
+let count = 5;
+
+count = 6;
+
+console.log(count);
+```
+
+Output:
+
+```
+6
+```
+
+The variable changes successfully.
+
+But Vue doesn't automatically track this ordinary variable and update the screen when it changes.
+
+Now let's use Vue's `ref()`.
+
+```
+<template>
+  <h1>Employee Count: {{ count }}</h1>
+
+  <button @click="count++">
+    Add Employee
+  </button>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const count = ref(5);
+</script>
+```
+
+When you click the button:
+
+- Initially, count is 5.
+- First click, count becomes 6.
+- Second click, count becomes 7.
+- Vue automatically updates the displayed value.
+
+Try it: Employee counter
+
+Employee count
+
+# 5
+
+RemoveAdd employee
+
+This is a demonstration of the expected counter behaviour.
+
+## 3. What exactly is `ref()`?
+
+`ref()` is a Vue function that creates reactive data.
+
+Syntax:
+
+```
+import { ref } from "vue";
+
+const variableName = ref(initialValue);
+```
+
+Example:
+
+```
+const employeeName = ref("Rahul");
+const salary = ref(35000);
+const isActive = ref(true);
+```
+
+Important: In JavaScript, access or modify a ref's value using `.value`.
+
+```
+console.log(employeeName.value);
+
+employeeName.value = "Priya";
+
+salary.value = 40000;
+```
+
+But inside the Vue template, you don't need `.value`.
+
+```
+<template>
+  <h2>{{ employeeName }}</h2>
+  <p>{{ salary }}</p>
+</template>
+```
+
+Vue automatically unwraps refs in templates.
+
+## 4. Real company example: Employee status
+
+Imagine your manager asks:
+
+"Add a button to activate or deactivate an employee."
+
+We can implement it using `ref()`.
+
+```
+<template>
+  <div>
+    <h2>Employee: Rahul</h2>
+
+    <p>Status: {{ isActive ? "Active" : "Inactive" }}</p>
+
+    <button @click="toggleStatus">
+      Change Status
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const isActive = ref(true);
+
+function toggleStatus() {
+  isActive.value = !isActive.value;
+}
+</script>
+```
+
+Understand this line:
+
+```
+isActive.value = !isActive.value;
+```
+
+- If the value is `true`, it changes to `false`.
+- If the value is `false`, it changes to `true`.
+
+This is called toggling.
+
+## 5. Interview questions
+
+Q1. What is reactivity in Vue?
+
+Reactivity means Vue tracks changes in reactive data and updates the relevant parts of the user interface automatically.
+
+Q2. What is `ref()`?
+
+`ref()` creates a reactive reference to a value in Vue 3.
+
+Q3. Why do we use `.value`?
+
+We use `.value` in JavaScript to access or modify the value stored inside a ref.
+
+Q4. Do we need `.value` inside templates?
+
+No. Vue automatically unwraps refs in templates.
+
+Q5. What happens when a ref value changes?
+
+Vue tracks the change and updates the relevant UI.
+
+## 6. JavaScript interview coding
+
+Question: Toggle the employee status.
+
+```
+let isActive = true;
+
+isActive = !isActive;
+
+console.log(isActive);
+```
+
+Output:
+
+```
+false
+```
+
+Follow-up: What will happen after executing the same statement again?
+
+Answer: It becomes `true`.
+
+# Day 3 assignments
+
+Task 1: Counter application
+
+- Start with count = 0.
+- Add button.
+- Decrease button.
+- Reset button.
+- Display the current count.
+
+Task 2: Employee salary
+
+- Create a reactive salary using `ref()`.
+- Initial salary: ₹30,000.
+- Add ₹5,000 button.
+- Deduct ₹2,000 button.
+- Display the updated salary.
+
+Task 3: Employee status
+
+- Create an employee named Rahul.
+- Initial status: Active.
+- Add a button to toggle between Active and Inactive.
+
+Task 4: Interview questions
+
+1. What is reactivity?
+2. Difference between normal variable and `ref()`?
+3. Why do we use `.value`?
+4. Why does Vue update the screen automatically?
+5. What does `!isActive.value` mean?
