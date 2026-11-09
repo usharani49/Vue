@@ -1044,10 +1044,12 @@ function increaseCount() {
 ```
 
 
-# The Golden Rule Checklist for <script>
+## The Golden Rule Checklist for <script>
 
 • Was it born from a ref() or computed()?
-👉 Yes? Use .value (e.g., employees.value, selectedDepartment.value).
+  Yes? Use .value (e.g., employees.value, selectedDepartment.value).
 
 • Was it born inside a function parenthesis ( ... ) => as a temporary placeholder?
-👉 No? Do NOT use .value (e.g., employee, total).
+  No? Do NOT use .value (e.g., employee, total).
+
+Inside <<script> use .value AND inside <template> use {{}}
