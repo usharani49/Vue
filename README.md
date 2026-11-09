@@ -583,7 +583,7 @@ Employee count
 
 # 5
 
-RemoveAdd employee
+Remove   Add employee
 
 This is a demonstration of the expected counter behaviour.
 
