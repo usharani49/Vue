@@ -1456,3 +1456,345 @@ Answer:
 
 - `reduce()` combines array elements into one final result.
 - `filter()` returns a new array containing elements that satisfy a condition.
+
+# Practice Task Answers
+
+## Task 1. Count IT department employees
+
+Requirement: Display the number of employees working in the IT department.
+
+```
+const itEmployeeCount = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.department === "IT";
+  }).length;
+});
+```
+
+Explanation:
+
+- `filter()` selects employees whose department is IT.
+- `.length` counts the selected employees.
+- `computed()` recalculates the count when employee data changes.
+
+Expected result: 2 IT employees.
+
+## Task 2. Calculate average salary
+
+Requirement: Calculate the average salary of all employees.
+
+```
+const averageSalary = computed(() => {
+  if (employees.value.length === 0) {
+    return 0;
+  }
+
+  const total = employees.value.reduce((sum, employee) => {
+    return sum + employee.salary;
+  }, 0);
+
+  return total / employees.value.length;
+});
+```
+
+Explanation:
+
+- `reduce()` calculates total salary.
+- `employees.value.length` gives the employee count.
+- Divide total salary by employee count.
+- The `if` condition prevents division by zero.
+
+Expected calculation:
+
+```
+Total salary = 170000
+Employees = 4
+
+Average salary = 170000 / 4
+               = 42500
+```
+
+## Task 3. Filter employees earning above ₹40,000
+
+Requirement: Display only employees whose salary is greater than ₹40,000.
+
+```
+const highSalaryEmployees = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.salary > 40000;
+  });
+});
+```
+
+Expected result:
+
+| Employee | Salary  |
+| -------- | ------- |
+| Arun     | ₹50,000 |
+| Sneha    | ₹45,000 |
+
+Notice that Rahul earns exactly ₹40,000. He is excluded because the condition uses `>` and not `>=`.
+
+## Task 4. Search employees by name
+
+Requirement: Add a search box. Update the employee list as the user types.
+
+First, create a reactive search variable:
+
+```
+const searchText = ref("");
+```
+
+Next, create a computed property:
+
+```
+const searchedEmployees = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.name
+      .toLowerCase()
+      .includes(searchText.value.toLowerCase());
+  });
+});
+```
+
+Explanation:
+
+- `toLowerCase()` makes the search case-insensitive.
+- `includes()` checks whether the employee name contains the search text.
+- `filter()` returns matching employees.
+- `computed()` updates the result when the search text changes.
+
+Example:
+
+| Search input | Result             |
+| ------------ | ------------------ |
+| rah          | Rahul              |
+| PRI          | Priya              |
+| ar           | Arun               |
+| xyz          | No employees found |
+
+## Task 5. Create an employee dashboard
+
+Requirement: Display four dashboard values:
+
+1. Total employees.
+2. Total salary.
+3. Average salary.
+4. IT department employee count.
+
+Here is the complete implementation.
+
+## Complete App.vue
+
+```
+
+<script setup>
+import { ref, computed } from "vue";
+
+// Employee data
+const employees = ref([
+  { id: 1, name: "Rahul", department: "IT", salary: 40000 },
+  { id: 2, name: "Priya", department: "HR", salary: 35000 },
+  { id: 3, name: "Arun", department: "IT", salary: 50000 },
+  { id: 4, name: "Sneha", department: "Finance", salary: 45000 }
+]);
+
+// Search input
+const searchText = ref("");
+
+// Task 1: IT employee count
+const itEmployeeCount = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.department === "IT";
+  }).length;
+});
+
+// Task 2: Total salary
+const totalSalary = computed(() => {
+  return employees.value.reduce((sum, employee) => {
+    return sum + employee.salary;
+  }, 0);
+});
+
+// Task 2: Average salary
+const averageSalary = computed(() => {
+  if (employees.value.length === 0) {
+    return 0;
+  }
+
+  return totalSalary.value / employees.value.length;
+});
+
+// Task 3: Employees earning above 40000
+const highSalaryEmployees = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.salary > 40000;
+  });
+});
+
+// Task 4: Search employees by name
+const searchedEmployees = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.name
+      .toLowerCase()
+      .includes(searchText.value.toLowerCase());
+  });
+});
+</script>
+
+<template>
+  <div class="container">
+    <h1>Employee Management System</h1>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+      <div class="card">
+        <h3>Total Employees</h3>
+        <h2>{{ employees.length }}</h2>
+      </div>
+
+      <div class="card">
+        <h3>Total Salary</h3>
+        <h2>₹{{ totalSalary.toLocaleString("en-IN") }}</h2>
+      </div>
+
+      <div class="card">
+        <h3>Average Salary</h3>
+        <h2>₹{{ averageSalary.toLocaleString("en-IN") }}</h2>
+      </div>
+
+      <div class="card">
+        <h3>IT Employees</h3>
+        <h2>{{ itEmployeeCount }}</h2>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <h2>Search Employees</h2>
+
+    <input
+      type="text"
+      v-model="searchText"
+      placeholder="Search by employee name"
+    />
+
+    <p v-if="searchedEmployees.length === 0">
+      No employees found.
+    </p>
+
+    <table v-else>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Salary</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          v-for="employee in searchedEmployees"
+          :key="employee.id"
+        >
+          <td>{{ employee.name }}</td>
+          <td>{{ employee.department }}</td>
+          <td>₹{{ employee.salary.toLocaleString("en-IN") }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- High Salary Employees -->
+    <h2>Employees Earning Above ₹40,000</h2>
+
+    <p v-if="highSalaryEmployees.length === 0">
+      No employees found.
+    </p>
+
+    <ul v-else>
+      <li
+        v-for="employee in highSalaryEmployees"
+        :key="employee.id"
+      >
+        {{ employee.name }} - ₹{{ employee.salary }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.card {
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+input {
+  padding: 10px;
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+@media (max-width: 500px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+```
+
+## Expected dashboard output
+
+## Employee Management System
+
+Total Employees
+
+# 4
+
+Total Salary
+
+# ₹1,70,000
+
+Average Salary
+
+# ₹42,500
+
+IT Employees
+
+# 2
+
+## Important interview concepts
+
+| Concept         | Remember this                                   |
+| --------------- | ----------------------------------------------- |
+| `computed()`    | Calculates values from reactive data            |
+| `filter()`      | Returns matching array elements                 |
+| `reduce()`      | Combines array elements into one result         |
+| `includes()`    | Checks whether a string contains another string |
+| `toLowerCase()` | Converts text to lowercase                      |
+| `v-model`       | Creates two-way binding between input and state |
+| `.length`       | Returns the number of array elements            |
