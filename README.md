@@ -1053,3 +1053,406 @@ function increaseCount() {
   No? Do NOT use .value (e.g., employee, total).
 
 Inside <<script> use .value AND inside <template> use {{}}
+
+## What is a computed property?
+
+Suppose our Employee Management System has these employees:
+
+```
+const employees = ref([
+  { id: 1, name: "Rahul", department: "IT", salary: 40000 },
+  { id: 2, name: "Priya", department: "HR", salary: 35000 },
+  { id: 3, name: "Arun", department: "IT", salary: 50000 },
+  { id: 4, name: "Sneha", department: "Finance", salary: 45000 }
+]);
+```
+
+Your manager asks you:
+
+"Display the total salary of all employees."
+
+We need to calculate:
+
+```
+40000 + 35000 + 50000 + 45000
+```
+
+Result:
+
+```
+170000
+```
+
+We might write:
+
+```
+let totalSalary = 0;
+
+for (let employee of employees.value) {
+  totalSalary += employee.salary;
+}
+```
+
+This works, but there is a problem.
+
+What happens when an employee's salary changes or a new employee joins?
+
+We need to calculate the total again manually.
+
+Vue provides `computed()` to solve this problem.
+
+## Understanding computed()
+
+A computed property automatically recalculates its result when one of its reactive dependencies changes.
+
+Syntax:
+
+```
+import { ref, computed } from "vue";
+
+const result = computed(() => {
+  // Calculation
+});
+```
+
+Let's calculate total salary.
+
+```
+const totalSalary = computed(() => {
+  return employees.value.reduce((total, employee) => {
+    return total + employee.salary;
+  }, 0);
+});
+```
+
+Let's understand this code.
+
+| Code              | Meaning                                  |
+| ----------------- | ---------------------------------------- |
+| `computed()`      | Creates a computed property              |
+| `employees.value` | Accesses the employee array              |
+| `reduce()`        | Calculates one final value from an array |
+| `total`           | Running total                            |
+| `employee.salary` | Current employee's salary                |
+| `0`               | Initial total                            |
+
+Result:
+
+```
+Total Salary: ₹170000
+```
+
+If an employee's salary changes, Vue automatically recalculates the total.
+
+You do not need to manually calculate it again.
+
+## Your first complete Vue example
+
+Open your project's `src/App.vue`.
+
+Replace its contents with this:
+
+```
+
+<script setup>
+import { ref, computed } from "vue";
+
+const employees = ref([
+  { id: 1, name: "Rahul", department: "IT", salary: 40000 },
+  { id: 2, name: "Priya", department: "HR", salary: 35000 },
+  { id: 3, name: "Arun", department: "IT", salary: 50000 },
+  { id: 4, name: "Sneha", department: "Finance", salary: 45000 }
+]);
+
+const totalSalary = computed(() => {
+  return employees.value.reduce((total, employee) => {
+    return total + employee.salary;
+  }, 0);
+});
+</script>
+
+<template>
+  <h2>Employee Management System</h2>
+
+  <h3>Total Employees: {{ employees.length }}</h3>
+  <h3>Total Salary: ₹{{ totalSalary }}</h3>
+
+  <div v-for="employee in employees" :key="employee.id">
+    <p>
+      {{ employee.name }} |
+      {{ employee.department }} |
+      ₹{{ employee.salary }}
+    </p>
+  </div>
+</template>
+
+```
+
+Expected output:
+
+## Employee Management System
+
+# ₹1,70,000
+
+Total salary · 4 employees
+
+| Employee | Department | Salary  |
+| -------- | ---------- | ------- |
+| Rahul    | IT         | ₹40,000 |
+| Priya    | HR         | ₹35,000 |
+| Arun     | IT         | ₹50,000 |
+| Sneha    | Finance    | ₹45,000 |
+
+Important: In JavaScript, use `totalSalary.value` if you need to access the computed result. In the Vue template, Vue automatically unwraps it, so `{{ totalSalary }}` works.
+
+## Difference between ref() and computed()
+
+This is an important interview question.
+
+| ref()                          | computed()                  |
+| ------------------------------ | --------------------------- |
+| Stores a reactive value        | Calculates a reactive value |
+| You assign or update its value | Vue calculates its value    |
+| Used for original data         | Used for derived data       |
+| Example: employee salary       | Example: total salary       |
+
+Example:
+
+```
+const salary = ref(40000);
+
+const annualSalary = computed(() => {
+  return salary.value * 12;
+});
+```
+
+Here:
+
+- `salary` stores ₹40,000.
+- `annualSalary` calculates ₹4,80,000.
+- If `salary` changes to ₹50,000, `annualSalary` automatically becomes ₹6,00,000.
+
+You should use `ref()` for data you want to store and update.
+
+Use `computed()` for values you want to derive from other reactive data.
+
+## Dynamic employee filtering
+
+Now let's use computed properties in a real company requirement.
+
+Imagine your manager gives you this ticket:
+
+"Add a department filter to the employee dashboard. When the user selects IT, display only IT employees."
+
+First, create a reactive filter:
+
+```
+const selectedDepartment = ref("All");
+```
+
+Then create a computed property:
+
+```
+const filteredEmployees = computed(() => {
+  if (selectedDepartment.value === "All") {
+    return employees.value;
+  }
+
+  return employees.value.filter((employee) => {
+    return employee.department === selectedDepartment.value;
+  });
+});
+```
+
+What happens here?
+
+- If the selected department is `All`, return every employee.
+- If the selected department is `IT`, return only IT employees.
+- If the selected department is `HR`, return only HR employees.
+
+Now add this to your template:
+
+```
+<select v-model="selectedDepartment">
+  <option value="All">All Departments</option>
+  <option value="IT">IT</option>
+  <option value="HR">HR</option>
+  <option value="Finance">Finance</option>
+</select>
+
+<div v-for="employee in filteredEmployees" :key="employee.id">
+  {{ employee.name }} - {{ employee.department }}
+</div>
+```
+
+Notice something important:
+
+`v-model` updates `selectedDepartment`.
+
+`computed()` detects the change and recalculates `filteredEmployees`.
+
+Vue updates the displayed list automatically.
+
+## Complete working example
+
+```
+
+<script setup>
+import { ref, computed } from "vue";
+
+const employees = ref([
+  { id: 1, name: "Rahul", department: "IT", salary: 40000 },
+  { id: 2, name: "Priya", department: "HR", salary: 35000 },
+  { id: 3, name: "Arun", department: "IT", salary: 50000 },
+  { id: 4, name: "Sneha", department: "Finance", salary: 45000 }
+]);
+
+const selectedDepartment = ref("All");
+
+const filteredEmployees = computed(() => {
+  if (selectedDepartment.value === "All") {
+    return employees.value;
+  }
+
+  return employees.value.filter((employee) => {
+    return employee.department === selectedDepartment.value;
+  });
+});
+
+const totalSalary = computed(() => {
+  return employees.value.reduce((total, employee) => {
+    return total + employee.salary;
+  }, 0);
+});
+</script>
+
+<template>
+  <h2>Employee Management System</h2>
+
+  <h3>Total Salary: ₹{{ totalSalary }}</h3>
+
+  <label>Filter by Department:</label>
+
+  <select v-model="selectedDepartment">
+    <option value="All">All Departments</option>
+    <option value="IT">IT</option>
+    <option value="HR">HR</option>
+    <option value="Finance">Finance</option>
+  </select>
+
+  <h3>Employee List</h3>
+
+  <p v-if="filteredEmployees.length === 0">
+    No employees found.
+  </p>
+
+  <div
+    v-for="employee in filteredEmployees"
+    :key="employee.id"
+  >
+    {{ employee.name }} |
+    {{ employee.department }} |
+    ₹{{ employee.salary }}
+  </div>
+</template>
+
+```
+
+## Try the department filter
+
+Employee dashboard
+
+Choose a department to see how computed filtering behaves.
+
+All Departments
+
+Employees shown
+
+# 4
+
+Rahul
+
+IT · ₹40,000
+
+Priya
+
+HR · ₹35,000
+
+Arun
+
+IT · ₹50,000
+
+Sneha
+
+Finance · ₹45,000
+
+## Interview questions
+
+1. What is a computed property in Vue?
+
+Answer: A computed property derives a value from reactive data. Vue automatically recalculates it when its dependencies change.
+
+2. Why do we use computed()?
+
+Answer: To calculate derived values efficiently and avoid repeating the same calculation in templates or methods.
+
+3. What is the difference between computed() and methods?
+
+Answer:
+
+- Computed properties cache their results until their reactive dependencies change.
+- Methods execute whenever they are called.
+
+4. Does computed() automatically update the UI?
+
+Answer: Yes. When a dependency changes, Vue recalculates the computed value and updates the UI where it is used.
+
+5. Can we modify a computed property directly?
+
+Answer: A computed property created with the getter-only syntax is read-only. Vue also supports writable computed properties with a getter and setter.
+
+## Practice tasks
+
+Complete these using your Employee Management System.
+
+Task 1: Calculate the number of employees in the IT department using `computed()`.
+
+Task 2: Calculate the average salary of all employees.
+
+Task 3: Add a salary filter. Display only employees whose salary is greater than ₹40,000.
+
+Task 4: Add a search box. Search employees by name. The list should update as the user types.
+
+Task 5: Create a dashboard with:
+
+- Total employees
+- Total salary
+- Average salary
+- IT department employee count
+
+## avaScript interview practice
+
+Understand this array method because we used it in today's lesson.
+
+```
+const salaries = [40000, 35000, 50000, 45000];
+
+const total = salaries.reduce((sum, salary) => {
+  return sum + salary;
+}, 0);
+
+console.log(total);
+```
+
+Output:
+
+```
+170000
+```
+
+Question: Why does `reduce()` return one value while `filter()` returns an array?
+
+Answer:
+
+- `reduce()` combines array elements into one final result.
+- `filter()` returns a new array containing elements that satisfy a condition.
