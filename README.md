@@ -1054,6 +1054,798 @@ function increaseCount() {
 
 Inside <<script> use .value AND inside <template> use {{}}
 
+
+# Understand the code inside computed()
+
+## First, understand the problem
+
+Suppose your Employee Management System has four employees.
+
+```
+const employees = [
+  { name: "Rahul", salary: 40000 },
+  { name: "Priya", salary: 35000 },
+  { name: "Arun", salary: 50000 },
+  { name: "Sneha", salary: 45000 }
+];
+```
+
+Your manager asks:
+
+"Calculate the total salary of all employees."
+
+Before writing code, think about what you need to do.
+
+1. Take Rahul's salary, 40000.
+2. Add Priya's salary, 35000.
+3. Add Arun's salary, 50000.
+4. Add Sneha's salary, 45000.
+
+Result: ₹1,70,000.
+
+This is a calculation based on existing employee data.
+
+In Vue, we use `computed()` to create a value based on other reactive values.
+
+## Understand the computed() structure
+
+Look at this code:
+
+```
+const totalSalary = computed(() => {
+  return 170000;
+});
+```
+
+Let's break it down.
+
+Part 1
+
+```
+const totalSalary =
+```
+
+We are creating a variable named `totalSalary`.
+
+Part 2
+
+```
+computed(
+```
+
+We are telling Vue to create a computed property.
+
+Part 3
+
+```
+() =>
+```
+
+This is an arrow function. It gives Vue a function containing the calculation.
+
+Part 4
+
+```
+{
+  return 170000;
+}
+```
+
+This function returns the calculated value.
+
+Final result
+
+```
+});
+```
+
+This closes the function and the `computed()` call.
+
+For now, remember this pattern:
+
+```
+const variableName = computed(() => {
+  return calculatedValue;
+});
+```
+
+Don't worry about employee arrays yet. First, understand the structure.
+
+## What does return mean?
+
+Consider this normal JavaScript function:
+
+```
+function getSalary() {
+  return 40000;
+}
+
+const salary = getSalary();
+
+console.log(salary);
+```
+
+Output:
+
+```
+40000
+```
+
+What happened?
+
+- `getSalary()` runs the function.
+- `return 40000` sends the value back.
+- The returned value gets stored in `salary`.
+
+Without `return`:
+
+```
+function getSalary() {
+  40000;
+}
+
+const salary = getSalary();
+
+console.log(salary);
+```
+
+Output:
+
+```
+undefined
+```
+
+Why?
+
+Because the function did not return anything.
+
+A function without an explicit return value returns `undefined`.
+
+This matters inside computed properties because Vue needs the function to return the value you want to calculate.
+
+## What are curly braces `{ }` doing?
+
+Look at:
+
+```
+const getSalary = () => {
+  return 40000;
+};
+```
+
+Here:
+
+- `()` holds the function parameters.
+- `=>` represents an arrow function.
+- `{ }` holds the function body.
+- `return` sends the result back.
+
+Compare these two functions:
+
+```
+const getSalary = () => {
+  return 40000;
+};
+```
+
+And:
+
+```
+const getSalary = () => 40000;
+```
+
+Both return `40000`.
+
+When you use curly braces in an arrow function, you need `return` to return a value.
+
+When you omit curly braces and write an expression directly, JavaScript returns that expression automatically.
+
+This difference is important.
+
+## Now put computed() and return together
+
+Let's calculate a fixed value first.
+
+```
+import { computed } from "vue";
+
+const totalSalary = computed(() => {
+  return 40000 + 35000;
+});
+```
+
+The calculation is:
+
+```
+40000 + 35000 = 75000
+```
+
+So `totalSalary` contains the computed result, ₹75,000.
+
+But we don't want to hardcode salary values. We want to calculate them from employee data.
+
+Before doing that, let's understand the array methods.
+
+# Understand filter(), reduce(), and length
+
+These three are different. Don't mix them up.
+
+## What is filter()?
+
+Suppose you have these salaries:
+
+```
+const salaries = [40000, 35000, 50000, 45000];
+```
+
+Your requirement:
+
+"Find salaries greater than 40000."
+
+Think about the condition:
+
+```
+salary > 40000
+```
+
+Now use `filter()`:
+
+```
+const result = salaries.filter((salary) => {
+  return salary > 40000;
+});
+
+console.log(result);
+```
+
+Output:
+
+```
+[50000, 45000]
+```
+
+What did `filter()` do?
+
+- It checked each salary.
+- It kept the values satisfying the condition.
+- It returned a new array containing those values.
+
+How filter() checks each value
+
+## 40,000
+
+Reject
+
+## 35,000
+
+Reject
+
+## 50,000
+
+Keep
+
+## 45,000
+
+Keep
+
+New array: `[50000, 45000]`
+
+The important point:
+
+`filter()` returns an array. It does not return just one matching value.
+
+Now apply it to employees:
+
+```
+const employees = [
+  { name: "Rahul", department: "IT" },
+  { name: "Priya", department: "HR" },
+  { name: "Arun", department: "IT" }
+];
+
+const itEmployees = employees.filter((employee) => {
+  return employee.department === "IT";
+});
+```
+
+Output:
+
+```
+[
+  { name: "Rahul", department: "IT" },
+  { name: "Arun", department: "IT" }
+]
+```
+
+Here, `employee` represents one employee at a time.
+
+## What is reduce()?
+
+Now consider the same salary array:
+
+```
+const salaries = [40000, 35000, 50000, 45000];
+```
+
+Your requirement:
+
+"Calculate the total salary."
+
+We need to add all the numbers.
+
+We could write a loop:
+
+```
+let total = 0;
+
+for (let salary of salaries) {
+  total = total + salary;
+}
+
+console.log(total);
+```
+
+Output:
+
+```
+170000
+```
+
+`reduce()` does the same kind of calculation.
+
+```
+const total = salaries.reduce((sum, salary) => {
+  return sum + salary;
+}, 0);
+
+console.log(total);
+```
+
+Output:
+
+```
+170000
+```
+
+Understand each part:
+
+| Code           | Meaning                               |
+| -------------- | ------------------------------------- |
+| `reduce()`     | Combines array values into one result |
+| `sum`          | Running total                         |
+| `salary`       | Current array value                   |
+| `sum + salary` | Adds the current salary               |
+| `0`            | Starting value of the total           |
+
+Let's follow the calculation:
+
+How reduce() calculates the total
+
+| Starting total    | 0        |
+| ----------------- | -------- |
+| 0 + 40,000        | 40,000   |
+| 40,000 + 35,000   | 75,000   |
+| 75,000 + 50,000   | 1,25,000 |
+| 1,25,000 + 45,000 | 1,70,000 |
+
+Final total
+
+# ₹1,70,000
+
+The important point:
+
+- `filter()` returns an array.
+- `reduce()` returns one final value in this example.
+
+## What is length?
+
+`length` tells you how many items are in an array.
+
+```
+const employees = ["Rahul", "Priya", "Arun", "Sneha"];
+
+console.log(employees.length);
+```
+
+Output:
+
+```
+4
+```
+
+You can also use it after `filter()`:
+
+```
+const itEmployees = employeesList.filter((employee) => {
+  return employee.department === "IT";
+});
+
+console.log(itEmployees.length);
+```
+
+If two employees belong to IT, the output is `2`.
+
+This is how we counted IT employees in Day 4.
+
+Remember:
+
+```
+employees.length
+```
+
+Counts all employees.
+
+```
+itEmployees.length
+```
+
+Counts only the employees in the filtered array.
+
+## Compare the three methods
+
+| Method     | What it does                 | Result    |
+| ---------- | ---------------------------- | --------- |
+| `filter()` | Selects matching items       | New array |
+| `reduce()` | Combines items into a result | One value |
+| `length`   | Counts items                 | Number    |
+
+# Understand includes() and toLowerCase()
+
+## What is includes()?
+
+Suppose the employee's name is Rahul.
+
+```
+const name = "Rahul";
+
+console.log(name.includes("Rah"));
+```
+
+Output:
+
+```
+true
+```
+
+Why?
+
+Because `"Rah"` exists inside `"Rahul"`.
+
+Now:
+
+```
+console.log(name.includes("Pri"));
+```
+
+Output:
+
+```
+false
+```
+
+Because `"Pri"` does not exist inside `"Rahul"`.
+
+So `includes()` checks whether one piece of text exists inside another.
+
+It returns either:
+
+- `true`, if it finds a match.
+- `false`, if it doesn't find a match.
+
+## What is toLowerCase()?
+
+Look at this:
+
+```
+const name = "RAHUL";
+
+console.log(name.toLowerCase());
+```
+
+Output:
+
+```
+rahul
+```
+
+It converts all letters to lowercase.
+
+Why do we need this in employee search?
+
+Consider:
+
+```
+const name = "Rahul";
+
+console.log(name.includes("rah"));
+```
+
+Output:
+
+```
+false
+```
+
+JavaScript's normal string comparison is case-sensitive.
+
+`"Rah"` and `"rah"` are treated as different text.
+
+We solve this by converting both strings to lowercase:
+
+```
+const name = "Rahul";
+const searchText = "RAH";
+
+console.log(
+  name.toLowerCase().includes(searchText.toLowerCase())
+);
+```
+
+Output:
+
+```
+true
+```
+
+Let's break it down:
+
+```
+name.toLowerCase()
+```
+
+Produces `"rahul"`.
+
+```
+searchText.toLowerCase()
+```
+
+Produces `"rah"`.
+
+Then:
+
+```
+"rahul".includes("rah")
+```
+
+Produces `true`.
+
+## Put search methods together with filter()
+
+Here is our employee list:
+
+```
+const employees = [
+  { name: "Rahul", department: "IT" },
+  { name: "Priya", department: "HR" },
+  { name: "Arun", department: "IT" },
+  { name: "Sneha", department: "Finance" }
+];
+```
+
+We want to search employees by name.
+
+```
+const searchText = "rah";
+
+const result = employees.filter((employee) => {
+  return employee.name
+    .toLowerCase()
+    .includes(searchText.toLowerCase());
+});
+
+console.log(result);
+```
+
+Output:
+
+```
+[
+  { name: "Rahul", department: "IT" }
+]
+```
+
+Understand the process:
+
+1. `filter()` checks each employee.
+2. `employee.name` gets the employee's name.
+3. `toLowerCase()` converts the name to lowercase.
+4. `includes()` checks whether the search text exists.
+5. `filter()` keeps employees who match.
+
+You now understand the main JavaScript methods used in the Day 4 search feature.
+
+# How ref(), computed(), v-model, and template work together
+
+This is the most important connection in Day 4.
+
+Let's understand it through one real requirement.
+
+Requirement:
+
+"Add a search box. When the user types an employee name, display matching employees automatically."
+
+There are four pieces involved.
+
+## First, ref() stores the data
+
+```
+const searchText = ref("");
+```
+
+This creates a reactive variable.
+
+Initially, its value is an empty string.
+
+When the user types `rah`, its value becomes `"rah"`.
+
+## Second, v-model connects the input to ref()
+
+```
+<input v-model="searchText" placeholder="Search employee" />
+```
+
+What does `v-model` do?
+
+It connects the input field to `searchText`.
+
+- When the user types, `searchText` changes.
+- When `searchText` changes programmatically, the input reflects the new value.
+
+For a text input, `v-model` handles both directions of this connection.
+
+## Third, computed() filters the employees
+
+```
+const searchedEmployees = computed(() => {
+  return employees.value.filter((employee) => {
+    return employee.name
+      .toLowerCase()
+      .includes(searchText.value.toLowerCase());
+  });
+});
+```
+
+Notice two reactive values here:
+
+- `employees.value`
+- `searchText.value`
+
+Vue tracks these dependencies.
+
+When the search text changes, Vue knows the computed result needs to be updated.
+
+## Fourth, the template displays the result
+
+```
+<div v-for="employee in searchedEmployees" :key="employee.id">
+  {{ employee.name }}
+</div>
+```
+
+`v-for` loops through the filtered employee array.
+
+It displays each matching employee.
+
+## Follow the complete flow
+
+User types "rah"
+
+Search input
+
+v-model
+
+Updates searchText in ref()
+
+computed()
+
+Filters employees using the new search text
+
+v-for in the template
+
+Displays the matching employee
+
+One key distinction:
+
+- `ref()` stores the input value.
+- `v-model` connects the input and the reactive variable.
+- `computed()` derives the filtered list.
+- The template displays the result.
+
+## Try the search yourself
+
+Live employee search
+
+4 matching employee(s)
+
+Rahul
+
+IT
+
+Priya
+
+HR
+
+Arun
+
+IT
+
+Sneha
+
+Finance
+
+# Understand .value
+
+You might have noticed this difference in our examples.
+
+Normal JavaScript array:
+
+```
+const employees = [];
+
+employees.filter(...);
+```
+
+Vue reactive array using `ref()`:
+
+```
+const employees = ref([]);
+
+employees.value.filter(...);
+```
+
+Why `.value`?
+
+Because `ref()` wraps your original value inside a Vue ref object.
+
+For example:
+
+```
+const salary = ref(40000);
+```
+
+To access its value inside JavaScript:
+
+```
+console.log(salary.value);
+```
+
+Output:
+
+```
+40000
+```
+
+The same applies to arrays:
+
+```
+const employees = ref([
+  { name: "Rahul", salary: 40000 }
+]);
+```
+
+To access the array in JavaScript:
+
+```
+employees.value
+```
+
+To filter it:
+
+```
+employees.value.filter(...)
+```
+
+But inside the Vue template, Vue automatically unwraps refs in common template expressions.
+
+So this works:
+
+```
+<p>{{ salary }}</p>
+```
+
+You don't need `salary.value` in the template.
+
+
 ## What is a computed property?
 
 Suppose our Employee Management System has these employees:
