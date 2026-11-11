@@ -1430,7 +1430,7 @@ Task 5: Create a dashboard with:
 - Average salary
 - IT department employee count
 
-## avaScript interview practice
+## JavaScript interview practice
 
 Understand this array method because we used it in today's lesson.
 
