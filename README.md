@@ -3007,3 +3007,335 @@ Task 5: Practical company requirement.
 - Watch the selected department.
 - Whenever the user changes the department, display the selected department in the console.
 
+
+# Practice Tasks Answers
+
+Let's solve each task using your Employee Management System.
+
+## Task 1: Watch employee search input
+
+Requirement:
+
+- Create a search input.
+- Watch the search value.
+- Print the new and old values in the console.
+
+Solution:
+
+```
+<script setup>
+import { ref, watch } from "vue";
+
+const searchText = ref("");
+
+watch(searchText, (newValue, oldValue) => {
+  console.log("New search:", newValue);
+  console.log("Previous search:", oldValue);
+});
+</script>
+
+<template>
+  <h2>Employee Search</h2>
+
+  <input
+    v-model="searchText"
+    placeholder="Search employee"
+  />
+</template>
+```
+
+Example console output:
+
+When you type Rahul:
+
+```
+New search: Rahul
+Previous search:
+```
+
+When you change Rahul to Priya:
+
+```
+New search: Priya
+Previous search: Rahul
+```
+
+Why does this work?
+
+1. `v-model` updates `searchText`.
+2. `watch()` detects the change.
+3. Vue passes the updated value as `newValue`.
+4. Vue passes the previous value as `oldValue`.
+
+## Task 2: Watch salary changes
+
+Requirement:
+
+- Create salary with an initial value of ₹30,000.
+- Display the salary.
+- Display a message whenever salary changes.
+
+Solution:
+
+```
+<script setup>
+import { ref, watch } from "vue";
+
+const salary = ref(30000);
+const message = ref("Salary not changed yet");
+
+watch(salary, (newSalary, oldSalary) => {
+  message.value = "Salary was updated";
+
+  console.log("Old salary:", oldSalary);
+  console.log("New salary:", newSalary);
+});
+</script>
+
+<template>
+  <h2>Employee Salary</h2>
+
+  <h3>Salary: ₹{{ salary }}</h3>
+
+  <button @click="salary += 5000">
+    Increase Salary
+  </button>
+
+  <button @click="salary -= 2000">
+    Decrease Salary
+  </button>
+
+  <p>{{ message }}</p>
+</template>
+```
+
+Example:
+
+Initial salary: ₹30,000
+
+Click Increase Salary:
+
+- New salary: ₹35,000
+- Message: Salary was updated.
+
+Click Decrease Salary:
+
+- New salary: ₹33,000
+- Message: Salary was updated.
+
+Important:
+
+`salary` is a ref. In the template, Vue automatically unwraps it. Inside JavaScript, use `salary.value` when reading or updating it.
+
+## Task 3: Use immediate: true
+
+Requirement:
+
+- Watch the selected department.
+- Display a message when the component starts.
+- Display another message whenever the department changes.
+
+Solution:
+
+```
+<script setup>
+import { ref, watch } from "vue";
+
+const selectedDepartment = ref("IT");
+
+const message = ref("");
+
+watch(
+  selectedDepartment,
+  (newDepartment, oldDepartment) => {
+    if (oldDepartment === undefined) {
+      message.value = `Initial department: ${newDepartment}`;
+    } else {
+      message.value =
+        `Department changed from ${oldDepartment} to ${newDepartment}`;
+    }
+  },
+  { immediate: true }
+);
+</script>
+
+<template>
+  <h2>Department Selection</h2>
+
+  <select v-model="selectedDepartment">
+    <option value="IT">IT</option>
+    <option value="HR">HR</option>
+    <option value="Finance">Finance</option>
+  </select>
+
+  <p>{{ message }}</p>
+</template>
+```
+
+Expected behavior:
+
+When the component loads:
+
+```
+Initial department: IT
+```
+
+When you select HR:
+
+```
+Department changed from IT to HR
+```
+
+When you select Finance:
+
+```
+Department changed from HR to Finance
+```
+
+Why use `immediate: true`?
+
+Normally, a watcher waits for a change before running.
+
+With `immediate: true`, Vue runs the watcher once during setup, then runs it again whenever the watched value changes.
+
+## Task 4: Use watchEffect()
+
+Requirement:
+
+- Create employee name and salary refs.
+- Display both values in the console using `watchEffect()`.
+
+Solution:
+
+```
+<script setup>
+import { ref, watchEffect } from "vue";
+
+const employeeName = ref("Rahul");
+const salary = ref(30000);
+
+watchEffect(() => {
+  console.log("Employee Name:", employeeName.value);
+  console.log("Employee Salary:", salary.value);
+});
+</script>
+
+<template>
+  <h2>Employee Details</h2>
+
+  <label>Employee Name:</label>
+  <input v-model="employeeName" />
+
+  <label>Salary:</label>
+  <input v-model.number="salary" type="number" />
+
+  <p>Name: {{ employeeName }}</p>
+  <p>Salary: ₹{{ salary }}</p>
+</template>
+```
+
+Expected console output when the component starts:
+
+```
+Employee Name: Rahul
+Employee Salary: 30000
+```
+
+When you change the name to Priya:
+
+```
+Employee Name: Priya
+Employee Salary: 30000
+```
+
+When you change salary to ₹40,000:
+
+```
+Employee Name: Priya
+Employee Salary: 40000
+```
+
+Why does it execute automatically?
+
+Vue detects the reactive values accessed inside `watchEffect()`.
+
+Here it tracks:
+
+- `employeeName.value`
+- `salary.value`
+
+When either changes, the effect runs again.
+
+## Task 5: Watch department selection
+
+Requirement:
+
+Create a department dropdown. Whenever the user changes the department, display the selected department in the console.
+
+Solution:
+
+```
+<script setup>
+import { ref, watch } from "vue";
+
+const selectedDepartment = ref("All");
+
+watch(selectedDepartment, (newDepartment, oldDepartment) => {
+  console.log("Previous department:", oldDepartment);
+  console.log("Selected department:", newDepartment);
+});
+</script>
+
+<template>
+  <h2>Employee Department Filter</h2>
+
+  <select v-model="selectedDepartment">
+    <option value="All">All Departments</option>
+    <option value="IT">IT</option>
+    <option value="HR">HR</option>
+    <option value="Finance">Finance</option>
+  </select>
+
+  <p>Selected Department: {{ selectedDepartment }}</p>
+</template>
+```
+
+Example console output:
+
+```
+Previous department: All
+Selected department: IT
+
+Previous department: IT
+Selected department: HR
+
+Previous department: HR
+Selected department: Finance
+```
+
+This is a common real-world pattern. You can use the same watcher to fetch department-specific employees from an API.
+
+## Important: Compare all three concepts
+
+You have now learned `ref()`, `computed()`, and `watch()`.
+
+| Vue feature     | Purpose                                            | Example              |
+| --------------- | -------------------------------------------------- | -------------------- |
+| `ref()`         | Store reactive data                                | Employee salary      |
+| `computed()`    | Calculate derived data                             | Average salary       |
+| `watch()`       | Perform an action when data changes                | Log salary changes   |
+| `watchEffect()` | Automatically track dependencies and run an effect | Log employee details |
+
+## Interview coding practice
+
+Try understanding these three scenarios:
+
+1. You need to calculate the total salary whenever employee salaries change. Which feature should you use?
+
+   Answer: `computed()`.
+2. You need to call an API whenever the selected department changes. Which feature should you use?
+
+   Answer: `watch()`.
+3. You need to run an effect immediately and automatically track every reactive value accessed inside it. Which feature should you use?
+
+   Answer: `watchEffect()`.
