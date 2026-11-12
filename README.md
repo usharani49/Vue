@@ -2590,3 +2590,420 @@ IT Employees
 | `toLowerCase()` | Converts text to lowercase                      |
 | `v-model`       | Creates two-way binding between input and state |
 | `.length`       | Returns the number of array elements            |
+
+
+# Watchers in Vue 3
+## What is a watcher?
+
+First, remember what we learned on Day 4.
+
+You created a search box:
+
+```
+const searchText = ref("");
+```
+
+When the user types a name, the employee list updates.
+
+Now imagine your manager gives you another requirement:
+
+"When the user searches for an employee, display a message showing what they searched for."
+
+For example:
+
+- User types `Rahul`.
+- Display: `You searched for Rahul`.
+- User changes it to `Priya`.
+- Display: `You searched for Priya`.
+
+How do we detect changes to `searchText`?
+
+This is where `watch()` comes in.
+
+A watcher observes a reactive value and runs a function when that value changes.
+
+Think of it this way:
+
+- `ref()` stores data.
+- `computed()` calculates a value.
+- `watch()` performs an action when data changes.
+
+## Understanding watch()
+
+Syntax:
+
+```
+import { ref, watch } from "vue";
+
+const searchText = ref("");
+
+watch(searchText, (newValue, oldValue) => {
+  console.log("New value:", newValue);
+  console.log("Old value:", oldValue);
+});
+```
+
+Let's understand each part.
+
+| Code              | Meaning                             |
+| ----------------- | ----------------------------------- |
+| `watch()`         | Starts watching a reactive value    |
+| `searchText`      | The value being watched             |
+| `newValue`        | The updated value                   |
+| `oldValue`        | The previous value                  |
+| Callback function | Runs when the watched value changes |
+
+Example:
+
+Initially:
+
+```
+const searchText = ref("");
+```
+
+The user types `Rahul`.
+
+Output:
+
+```
+New value: Rahul
+Old value:
+```
+
+Then the user changes it to `Priya`.
+
+Output:
+
+```
+New value: Priya
+Old value: Rahul
+```
+
+Important: By default, `watch()` does not run immediately when it is created. It runs when the watched value changes.
+
+## Your first complete watch() example
+
+Open `src/App.vue` and try this:
+
+```
+
+<script setup>
+import { ref, watch } from "vue";
+
+const searchText = ref("");
+
+const message = ref("Start typing an employee name");
+
+watch(searchText, (newValue, oldValue) => {
+  if (newValue.trim() === "") {
+    message.value = "Search field is empty";
+  } else {
+    message.value = `You searched for ${newValue}`;
+  }
+
+  console.log("New value:", newValue);
+  console.log("Old value:", oldValue);
+});
+</script>
+
+<template>
+  <h2>Employee Search</h2>
+
+  <input
+    v-model="searchText"
+    placeholder="Enter employee name"
+  />
+
+  <p>{{ message }}</p>
+</template>
+
+```
+
+Try typing `Rahul`, then change it to `Priya`.
+
+The message changes whenever the search value changes.
+
+What happened?
+
+1. `v-model` updates `searchText`.
+2. `watch()` detects the change.
+3. The callback executes.
+4. `message.value` updates.
+5. Vue refreshes the displayed message.
+
+## Practical company example: API calls
+
+Imagine you are working on an employee dashboard.
+
+Your manager gives you this ticket:
+
+"When the user selects a department, fetch employees belonging to that department from the backend."
+
+For example:
+
+- User selects IT.
+- Frontend requests IT employees from the backend.
+- Backend returns IT employee records.
+- Frontend displays the result.
+
+You can use `watch()` to detect the department change and trigger the API request.
+
+Example:
+
+```
+import { ref, watch } from "vue";
+
+const selectedDepartment = ref("All");
+
+watch(selectedDepartment, async (newDepartment) => {
+  const response = await fetch(
+    `/api/employees?department=${newDepartment}`
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+});
+```
+
+Explanation:
+
+- `selectedDepartment` stores the selected department.
+- `watch()` detects changes.
+- `async` allows the callback to wait for an API response.
+- `fetch()` sends an HTTP request.
+- `response.json()` converts the response into JavaScript data.
+
+Note: This is an example of the frontend logic. The `/api/employees` endpoint must exist on your backend for the request to work.
+
+This pattern is common in real projects.
+
+##  Watch with immediate option
+
+Remember, `watch()` normally runs only after a change.
+
+But sometimes you need it to run immediately when the component starts.
+
+Example:
+
+```
+watch(
+  searchText,
+  (newValue, oldValue) => {
+    console.log("Search value:", newValue);
+  },
+  { immediate: true }
+);
+```
+
+What does `immediate: true` do?
+
+It executes the watcher once immediately when it is registered.
+
+This is useful when you need an initial action, such as loading data when a component opens.
+
+##  Watch with deep option
+
+Consider this employee object:
+
+```
+const employee = ref({
+  name: "Rahul",
+  salary: 40000
+});
+```
+
+Now you change only the salary:
+
+```
+employee.value.salary = 50000;
+```
+
+What if you want to watch changes inside the employee object?
+
+Use the `deep` option:
+
+```
+watch(
+  employee,
+  (newValue, oldValue) => {
+    console.log("Employee details changed");
+  },
+  { deep: true }
+);
+```
+
+`deep: true` tells Vue to watch nested changes inside the object.
+
+Important: With deep watching, `newValue` and `oldValue` often refer to the same object when only a nested property changes. Do not expect two separate snapshots.
+
+## What is watchEffect()?
+
+Now let's learn the second type of watcher.
+
+With `watch()`, you explicitly tell Vue which value to observe.
+
+With `watchEffect()`, Vue automatically detects the reactive values used inside the function.
+
+Syntax:
+
+```
+import { ref, watchEffect } from "vue";
+
+const employeeName = ref("Rahul");
+
+watchEffect(() => {
+  console.log("Employee:", employeeName.value);
+});
+```
+
+What happens?
+
+1. `watchEffect()` runs immediately.
+2. It reads `employeeName.value`.
+3. Vue tracks that reactive dependency.
+4. When `employeeName` changes, the function runs again.
+
+You do not need to specify `employeeName` separately.
+
+## Complete watchEffect() example
+
+```
+
+<script setup>
+import { ref, watchEffect } from "vue";
+
+const employeeName = ref("Rahul");
+const salary = ref(40000);
+
+watchEffect(() => {
+  console.log("Employee:", employeeName.value);
+  console.log("Salary:", salary.value);
+});
+</script>
+
+<template>
+  <h2>Employee Details</h2>
+
+  <label>Employee Name</label>
+  <input v-model="employeeName" />
+
+  <label>Salary</label>
+  <input v-model.number="salary" type="number" />
+
+  <p>Name: {{ employeeName }}</p>
+  <p>Salary: ₹{{ salary }}</p>
+</template>
+
+```
+
+When you change either field, `watchEffect()` runs again because it uses both reactive values.
+
+## Difference between watch() and watchEffect()
+
+This is a common Vue interview question.
+
+| `watch()`                      | `watchEffect()`                               |
+| ------------------------------ | --------------------------------------------- |
+| You specify what to watch      | Vue detects dependencies automatically        |
+| Runs after a change by default | Runs immediately                              |
+| Provides new and old values    | Does not provide them as callback arguments   |
+| Useful for specific changes    | Useful when several dependencies are involved |
+
+Example:
+
+```
+// watch()
+watch(employeeName, (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+});
+
+// watchEffect()
+watchEffect(() => {
+  console.log(employeeName.value);
+});
+```
+
+## Difference between computed() and watch()
+
+Another important interview question.
+
+| `computed()`                   | `watch()`                            |
+| ------------------------------ | ------------------------------------ |
+| Calculates and returns a value | Performs an action when data changes |
+| Returns a computed ref         | Does not return a derived value      |
+| Caches its result              | Runs its callback when triggered     |
+| Used for derived data          | Used for side effects                |
+
+Example:
+
+```
+// Computed: calculate annual salary
+const annualSalary = computed(() => {
+  return salary.value * 12;
+});
+
+// Watch: perform an action when salary changes
+watch(salary, (newSalary) => {
+  console.log("Salary updated:", newSalary);
+});
+```
+
+Use `computed()` to calculate.
+
+Use `watch()` to react with an action.
+
+
+## Interview questions
+
+Try answering these before looking at the answers.
+
+1. What is a watcher in Vue?
+2. What is the difference between `watch()` and `watchEffect()`?
+3. Does `watch()` execute immediately by default?
+4. What is the purpose of `immediate: true`?
+5. What is the purpose of `deep: true`?
+6. When should you use `computed()` instead of `watch()`?
+7. How do you trigger an API call when a department changes?
+
+Answers:
+
+1. A watcher observes reactive data and executes a callback when the watched data changes.
+2. `watch()` tracks explicitly specified sources. `watchEffect()` automatically tracks reactive values accessed inside its function.
+3. No. It waits for a change by default.
+4. It executes the watcher immediately after registration.
+5. It tracks nested changes inside objects.
+6. Use `computed()` to derive values. Use `watch()` for side effects such as API requests.
+7. Watch the department ref and call the API inside the watcher callback.
+
+## Practice tasks
+
+Use your existing Employee Management System.
+
+Task 1: Watch employee search input.
+
+- When the user types a name, print the new and old values in the console.
+
+Task 2: Watch salary changes.
+
+- Create `salary = ref(30000)`.
+- Display the salary.
+- Whenever salary changes, display a message: `Salary was updated`.
+
+Task 3: Use `immediate: true`.
+
+- Watch the selected department.
+- Display a message when the component starts.
+- Display another message whenever the department changes.
+
+Task 4: Use `watchEffect()`.
+
+- Create employee name and salary refs.
+- Display both values in the console using `watchEffect()`.
+
+Task 5: Practical company requirement.
+
+- Create a department dropdown.
+- Watch the selected department.
+- Whenever the user changes the department, display the selected department in the console.
+
