@@ -1748,27 +1748,6 @@ One key distinction:
 - `computed()` derives the filtered list.
 - The template displays the result.
 
-## Try the search yourself
-
-Live employee search
-
-4 matching employee(s)
-
-Rahul
-
-IT
-
-Priya
-
-HR
-
-Arun
-
-IT
-
-Sneha
-
-Finance
 
 # Understand .value
 
