@@ -1465,7 +1465,7 @@ console.log(itEmployees.length);
 
 If two employees belong to IT, the output is `2`.
 
-This is how we counted IT employees in Day 4.
+This is how we counted IT employees earlier.
 
 Remember:
 
@@ -1652,11 +1652,8 @@ Understand the process:
 4. `includes()` checks whether the search text exists.
 5. `filter()` keeps employees who match.
 
-You now understand the main JavaScript methods used in the Day 4 search feature.
 
 # How ref(), computed(), v-model, and template work together
-
-This is the most important connection in Day 4.
 
 Let's understand it through one real requirement.
 
@@ -2595,7 +2592,7 @@ IT Employees
 # Watchers in Vue 3
 ## What is a watcher?
 
-First, remember what we learned on Day 4.
+First, remember what we learned in the earlier sessions
 
 You created a search box:
 
